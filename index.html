@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <base target="_top">
+    <style>
+      input::placeholder {
+        color: white;
+      }
+      input {
+        border: 0;
+        outline: 0;
+        background: transparent;
+        border-bottom: 1px solid black;
+      }
+      body {
+        background: #228B22;
+        color: #000000;
+      }
+      h1 {
+        font-size: calc(12px + 7vw);
+      }
+      h2 {
+        font-size: calc(12px + 1.5vw);
+      }
+      p {
+        font-size: calc(12px + 0.75vw);
+      }
+      label {
+        font-size: calc(12px + 0.75vw);
+      }
+      .outer {
+        display: table;
+        position: absolute;
+        height: 100%;
+        width: 100%;
+      }
+      .middle {
+        display: table-cell;
+        vertical-align: middle;
+      }
+      .inner {
+        margin-left: 20%;
+        margin-right: 20%;
+      }
+      #firstname, #surname {
+        text-transform: capitalize;
+      }
+    </style>
+    <style>
+
+      /* Mark input boxes that get an error on validation: */
+      input.invalid {
+        border-color: #ff0000;
+      }
+      
+      /* Hide all steps by default: */
+      .tab {
+        display: none;
+      }
+    
+    </style>
+  </head>
+  <body>
+    <div class="outer">
+      <div class="middle">
+        <div class="inner text-center">
+          <h1 id="big">Please sign in!</h1>
+          <p id="test"></p><p id="test2"></p>
+          <!-- https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_form_steps /-->
+          <form id="regForm" action="<SCRIPT URL>" method="post">
+          <div class="tab">
+            <h2>Welcome!</h2>
+            <p><input id="firstname" name="firstname" placeholder="First name" oninput="this.className = ''" required /> <input id="surname" name="surname" placeholder="Last name" oninput="this.className = ''" required/></p>
+          </div>
+          <div class="tab">
+            <h2 id="wait"></h2><br />
+            <h2 id="endwait"></h2>
+            <p id="endwait2"></p>
+          </div>
+          <div class="tab" id="emailtab">
+            <h2>Please enter your email address.</h2>
+            <p><input id="email" name="email" oninput="this.className = ''" type="email" /></p>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" name="notify" type="checkbox" value="true" id="notifyCheck" oninput="this.className = ''" onclick="requireEmail(this)">
+              <label class="form-check-label" for="notifyCheck">
+              I would like to receive email notifications about upcoming events.
+              </label>
+            </div>
+          </div>
+          <div class="tab" id="studenttab">
+            <h2>Are you currently a student at the University of Alberta?</h2>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" id="inlineCheckbox1" name="student" onclick="change(this)" value="undergraduate">
+              <label class="form-check-label" for="inlineCheckbox1">Yes, undergraduate</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" id="inlineCheckbox2" name="student" onclick="change(this)" value="graduate">
+              <label class="form-check-label" for="inlineCheckbox2">Yes, graduate</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" id="inlineCheckbox3" name="student" onclick="change(this)" value="none">
+              <label class="form-check-label" for="inlineCheckbox3">No</label>
+            </div>
+            <p>
+              <!-- div style="padding-left: 2em; padding-right: 2em; display: inline-block"><input type="radio" name="student" onclick="change(this)" value="undergraduate"> Yes, undergraduate</div>
+              <div style="padding-left: 2em; padding-right: 2em; display: inline-block"><input type="radio" name="student" onclick="change(this)" value="graduate"> Yes, graduate</div>
+              <div style="padding-left: 2em; padding-right: 2em; display: inline-block"><input type="radio" name="student" onclick="change(this)" value="none"> No</div /-->
+            </p>
+            <div class="form-check form-check-inline" id="isstudent" style="display: none">
+              <input class="form-check-input" name="membershipinterest" type="checkbox" value="true" id="defaultCheck1" oninput="this.className = ''">
+              <label class="form-check-label" for="defaultCheck1">
+              I would like a free membership with UAWCS.
+              </label>
+            </div>
+            <!--p id="isstudent"style="display: none"><input name="membershipinterest" type="checkbox" value="true" oninput="this.className = ''" /> <label for="membershipinterest">
+              I would like a free membership with UAWCS.
+              </label>
+            </p /-->
+          </div>
+          <div class="tab">
+            <div id="waiver"></div>
+            <input name="waiver" style="display: none" type="checkbox" value="true" oninput="this.className = ''" checked/>
+            <input name="row" style="display: none" id="row"/>
+            <input name="datesattended" style="display: none" id="datesattended"/>
+          </div>
+          <div style="overflow:auto;">
+            <div style="float:right;">
+              <button type="button" id="prevBtn" onclick="nextPrev(-1)" class="btn btn-secondary">Previous</button>
+              <button type="button" id="nextBtn" onclick="nextPrev(1)" class="btn btn-success">Next</button>
+            </div>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>  
+  </body>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+  <script>
+    var personData = []; //object to store information about person signing in
+    var currentTab = 0; // Current tab is set to be the first tab (0)
+    showTab(currentTab); // Display the current tab
+
+    /* Set up so the "enter" key works on the first tab. */
+    document.forms['regForm'].elements['surname'].addEventListener("keyup", function(event) {
+      event.preventDefault();
+      if (event.keyCode === 13) {
+        document.getElementById("nextBtn").click();
+      }
+    });
+    document.forms['regForm'].elements['firstname'].addEventListener("keyup", function(event) {
+      event.preventDefault();
+      if (event.keyCode === 13) {
+        document.forms['regForm'].elements['surname'].focus();
+      }
+    });
+    
+    function requireEmail(checkbox) {
+      if (checkbox.checked) {
+        document.forms['regForm'].elements['email'].required = true;
+      } else {
+        document.forms['regForm'].elements['email'].required = false;
+      }
+    }
+    
+    /* Show and hide the membership option, based on student status. */
+    /* https://stackoverflow.com/questions/49060359/change-content-of-div-based-on-radio-button-selection */
+    function change(radio) { 
+        if (radio.checked && (radio.value === "graduate" || radio.value === "undergraduate")) {
+            document.getElementById("isstudent").style.display = "block";
+        } else {
+            document.getElementById("isstudent").style.display = "none";
+        }
+    }
+
+function showTab(n) {
+  // This function will display the specified tab of the form ...
+  var x = document.getElementsByClassName("tab");
+  x[n].style.display = "block";
+  // ... and fix the Previous/Next buttons:
+  if (n == 0) {
+    document.getElementById("prevBtn").style.display = "none";
+  } else {
+    document.getElementById("prevBtn").style.display = "inline";
+  }
+  if (n == (x.length - 1)) {
+    document.getElementById("nextBtn").innerHTML = "Submit";
+  } else {
+    document.getElementById("nextBtn").innerHTML = "Next";
+  }
+}
+
+function nextPrev(n) {
+  // This function will figure out which tab to display
+  var x = document.getElementsByClassName("tab");
+  // Exit the function if any field in the current tab is invalid:
+  if (n == 1 && !validateForm()) return false;
+  // Hide the current tab:
+  x[currentTab].style.display = "none";
+  
+  
+  // **** Nadia's attempt ****
+  if (currentTab == 0) {
+    
+    document.getElementById("big").innerHTML = "Welcome!";
+    
+    y = x[currentTab].getElementsByTagName("input");
+    
+    document.getElementById("wait").innerHTML = "Howdy, <b>" + y[0].value + " " + y[1].value + "</b>!<br />Just give us a moment to see if you're in our system...";
+    document.getElementById("nextBtn").disabled = true;
+    
+    google.script.run.withSuccessHandler(nameSuccess)
+          .retrieveUserRecord(y[0].value,y[1].value);
+
+  }
+  
+  // Increase or decrease the current tab by 1:
+  currentTab = currentTab + n;
+  // if you have reached the end of the form... :
+  if (currentTab >= x.length) {
+    //...the form gets submitted:
+    document.getElementById("regForm").submit();
+    document.getElementById("test").innerHTML = "Thank you!";
+    return false;
+  }
+  // Otherwise, display the correct tab:
+  showTab(currentTab);
+}
+
+function validateForm() {
+  // This function deals with validation of the form fields
+  var x, y, i, valid = true;
+  x = document.getElementsByClassName("tab");
+  y = x[currentTab].getElementsByTagName("input");
+  // A loop that checks every input field in the current tab:
+  for (i = 0; i < y.length; i++) {
+    // If a field is empty...
+    if (y[i].value == "" && y[i].required == true) {
+      // add an "invalid" class to the field:
+      y[i].className += " invalid";
+      // and set the current valid status to false:
+      valid = false;
+    }
+  }
+  return valid; // return the valid status
+}
+
+function nameSuccess(tempData) {
+  console.log(tempData);
+  if (tempData) {
+    personData = tempData;
+  } else {
+    personData = false;
+  }
+  
+  /* We've got their data. We can tell them if we found them or not and let them proceed. */
+  document.getElementById("nextBtn").disabled = false;
+  if (personData) {
+    document.getElementById("endwait").innerHTML = "Found you! Please hit Next to continue."
+  } else {
+    document.getElementById("endwait").innerHTML = "Not yet!"
+    document.getElementById("endwait2").innerHTML = "If you've signed in before, please check the spelling of your name.<br />You can hit Previous to make changes. <br />Otherwise, hit Next to continue."
+  }
+  
+  /* Check to see if the user has a waiver, and notify them accordingly. */
+  if (personData != null && personData[2] == true) {
+    document.getElementById("waiver").innerHTML = "<h2>We have a current waiver for you on file, so you do not need to fill out another one.</h2><h2>Please put your admission donation in the collection tin on the table. Enjoy the dance!</h2>";
+  } else {
+    document.getElementById("waiver").innerHTML = "<h2>You need to fill out a new waiver.</h2><p>Please note that waivers are double-sided, and we ask that only Maxine, Nadia, or Roshan witness your signature.</p>";
+//    document.getElementById("waiver2").innerHTML = "";
+  }
+  
+  /* If we already have the person's email address, we don't ask for it. */
+  if (personData && personData[4] != "" && typeof(personData[4]) === 'string') {
+    document.getElementById("emailtab").style.display = "none";
+    document.getElementById("emailtab").className = "nottab";
+    document.getElementById("email").value = personData[4];
+  }
+  
+  /* If we already have the person's student status, we don't ask for it. */
+  if (personData && personData[6] != "" && typeof(personData[6]) === 'string') {
+    document.getElementById("studenttab").style.display = "none";
+    document.getElementById("studenttab").className = "nottab";
+    setCheckedValue(document.forms['regForm'].elements['student'], personData[6]);
+  }
+  
+  /* We reuse any known answer to the membership question. */
+  if (personData && personData[7] != "") {
+    document.forms['regForm'].elements['membershipinterest'].checked = true;
+  }
+  
+  if (personData) {
+    document.getElementById("datesattended").value = JSON.stringify(personData.slice(8,personData.length - 1));
+  }
+  
+  /* We appended the row that we found the user in to the end of their data. Get it and add it to the form. */
+  document.getElementById("row").value = personData[personData.length - 1];
+
+}
+
+
+// set the radio button with the given value as being checked
+// do nothing if there are no radio buttons
+// if the given value does not exist, all the radio buttons
+// are reset to unchecked
+// https://www.somacon.com/p143.php
+function setCheckedValue(radioObj, newValue) {
+	if(!radioObj)
+		return;
+	var radioLength = radioObj.length;
+	if(radioLength == undefined) {
+		radioObj.checked = (radioObj.value == newValue.toString());
+		return;
+	}
+	for(var i = 0; i < radioLength; i++) {
+		radioObj[i].checked = false;
+		if(radioObj[i].value == newValue.toString()) {
+			radioObj[i].checked = true;
+		}
+	}
+}
+  </script>
+</html>
